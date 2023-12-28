@@ -1,0 +1,17 @@
+{
+  "name": "whatsapper",
+  "version": "0.0.1",
+  "description": "Web api for whatsapp-web.js",
+  "main": "server.js",
+  "keywords": [],
+  "author": "baldarn",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^4.25.2",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.23.0"
+  },
+  "devDependencies": {
+    "tap": "^16.1.0"
+  }
+}

@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  whatsapper:
+    image: whatsapper:whatsapper
+    build:
+      context: .
+    container_name: whatsapper
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
