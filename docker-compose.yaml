@@ -2,11 +2,15 @@ version: '3.9'
 
 services:
   whatsapper:
-    image: whatsapper:whatsapper
+    image: baldarn/whatsapper
     build:
       context: .
     container_name: whatsapper
     volumes:
-      - .:/app
+      - ./app:/app
+      - whatsapper:/wwebjs
     ports:
-      - 3000:3000
+      - 4000:3000
+
+volumes:
+  whatsapper:
