@@ -36,13 +36,6 @@ fastify.register(require("@fastify/view"), {
   },
 });
 
-fastify.addHook('onRequest', (request, reply, done) => {
-  if (!clientInitialized) {
-    return reply.send({ error: "Client not initalized" });
-  }
-  done();
-})
-
 fastify.get("/", function handler(_, reply) {
   reply.statusCode = 200;
   reply.send()
@@ -53,6 +46,9 @@ fastify.get("/qr", function handler(_, reply) {
 });
 
 fastify.get("/chats", async function handler(_, reply) {
+  if (!clientInitialized) {
+    return reply.send({ error: "Client not initalized" });
+  }
   try {
     resp = await client.getChats();
     const chats = resp.map((chat) => ({ name: chat.name, id: chat.id._serialized }));
@@ -64,6 +60,9 @@ fastify.get("/chats", async function handler(_, reply) {
 });
 
 fastify.post("/command", async function handler(request, reply) {
+  if (!clientInitialized) {
+    return reply.send({ error: "Client not initalized" });
+  }
   try {
     command = request.body.command;
     params = request.body.params;
