@@ -6,8 +6,8 @@ const client = new Client({
   puppeteer: {
     args: ["--no-sandbox"],
   },
-  authStrategy: new LocalAuth({ dataPath: "/wwebjs/.wwebjs_auth/" }),
-  webVersionCache: { path: "/wwebjs/.wwebjs_cache/" },
+  authStrategy: new LocalAuth({ dataPath: "/data/.wwebjs_auth/" }),
+  webVersionCache: { path: "/data/.wwebjs_cache/" },
 });
 
 let receivedQr = null;
