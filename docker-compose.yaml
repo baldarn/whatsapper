@@ -8,7 +8,7 @@ services:
     container_name: whatsapper
     volumes:
       - ./app:/app
-      - whatsapper:/wwebjs
+      - whatsapper:/data
     ports:
       - 4000:3000
 

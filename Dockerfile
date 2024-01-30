@@ -7,6 +7,6 @@ COPY package*.json .
 RUN npm install
 EXPOSE 3000
 
-VOLUME /wwebjs
+VOLUME /data
 
 ENTRYPOINT ["tini", "--", "node", "server.js"]
