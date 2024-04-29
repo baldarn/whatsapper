@@ -7,7 +7,11 @@ const client = new Client({
     args: ["--no-sandbox"],
   },
   authStrategy: new LocalAuth({ dataPath: "/data/.wwebjs_auth/" }),
-  webVersionCache: { path: "/data/.wwebjs_cache/" },
+  webVersionCache:
+  {
+    remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2402.5-beta.html',
+    type: 'remote'
+  }
 });
 
 let receivedQr = null;
