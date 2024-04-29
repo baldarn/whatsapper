@@ -7,11 +7,7 @@ const client = new Client({
     args: ["--no-sandbox"],
   },
   authStrategy: new LocalAuth({ dataPath: "/data/.wwebjs_auth/" }),
-  webVersionCache:
-  {
-    remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2402.5-beta.html',
-    type: 'remote'
-  }
+  webVersionCache: { path: "/data/.wwebjs_cache/" },
 });
 
 let receivedQr = null;
@@ -42,7 +38,7 @@ fastify.register(require("@fastify/view"), {
 
 fastify.get("/", function handler(_, reply) {
   reply.statusCode = 200;
-  reply.send()
+  reply.send();
 });
 
 fastify.get("/qr", function handler(_, reply) {
@@ -55,7 +51,10 @@ fastify.get("/chats", async function handler(_, reply) {
   }
   try {
     resp = await client.getChats();
-    const chats = resp.map((chat) => ({ name: chat.name, id: chat.id._serialized }));
+    const chats = resp.map((chat) => ({
+      name: chat.name,
+      id: chat.id._serialized,
+    }));
     return reply.view("/templates/chats.ejs", { chats: chats });
   } catch (e) {
     reply.statusCode = 500;
