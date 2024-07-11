@@ -1,4 +1,4 @@
-const { Client, LocalAuth } = require("whatsapp-web.js");
+const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 
 // wwebjs configuration
@@ -37,8 +37,7 @@ fastify.register(require("@fastify/view"), {
 });
 
 fastify.get("/", function handler(_, reply) {
-  reply.statusCode = 200;
-  reply.send();
+  reply.view("/templates/root.ejs");
 });
 
 fastify.get("/qr", function handler(_, reply) {
@@ -71,6 +70,36 @@ fastify.post("/command", async function handler(request, reply) {
     params = request.body.params;
     resp = await client[command](...params);
     reply.send({ resp: resp });
+  } catch (e) {
+    reply.statusCode = 500;
+    reply.send({ error: e });
+  }
+});
+
+fastify.post("/command/:type", async function handler(request, reply) {
+  if (!clientInitialized) {
+    return reply.send({ error: "Client not initalized" });
+  }
+  try {
+    const { type } = request.params;
+    params = request.body.params;
+
+    switch (type) {
+      case 'media':
+        remote_id = params[0]
+        const media = new MessageMedia(
+          params[1],
+          params[2],
+          params[3]
+        );
+
+        resp = await client.sendMessage(remote_id, media);
+        reply.send({ resp: resp });
+        break;
+      default:
+        reply.statusCode = 400;
+        reply.send({ error: e });
+    }
   } catch (e) {
     reply.statusCode = 500;
     reply.send({ error: e });

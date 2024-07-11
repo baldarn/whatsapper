@@ -18,6 +18,14 @@ After this, whatsapper is logged and you can forward all `whatsapp-web.js` calls
 
 this will be forwarded to the whatsapp-web.js and you will get back the return of the lib.
 
+## Special commands
+
+To send media, call with a `POST` via the `/command/media` api with this json syntax:
+
+```json
+    "params": ["remote_id to send the media to", "image/png", "29y78y424GWIOJFADIJFADS", "filename.png"],
+```
+
 ## Run
 
 ```shell
