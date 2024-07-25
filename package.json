@@ -1,6 +1,6 @@
 {
   "name": "whatsapper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web api for whatsapp-web.js",
   "main": "server.js",
   "keywords": [],
@@ -11,7 +11,7 @@
     "ejs": "^3.1.9",
     "fastify": "^4.25.2",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "https://github.com/pedroslopez/whatsapp-web.js.git#webpack-exodus"
+    "whatsapp-web.js": "^1.25.0"
   },
   "devDependencies": {
     "tap": "^16.1.0"

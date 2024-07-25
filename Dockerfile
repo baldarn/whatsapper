@@ -1,4 +1,4 @@
-FROM zenika/alpine-chrome:with-puppeteer
+FROM zenika/alpine-chrome:124-with-puppeteer
 
 ADD app /app
 WORKDIR /app
