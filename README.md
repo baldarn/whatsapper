@@ -36,3 +36,8 @@ node server.js
 ## Run with docker compose
 
 `docker compose up`
+
+
+## Push on docker hub (for me to remember)
+
+`docker buildx build --push --platform linux/amd64 --tag baldarn/whatsapper:TAG --tag baldarn/whatsapper:latest .`
