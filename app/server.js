@@ -1,31 +1,8 @@
-const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
-const qrcode = require("qrcode-terminal");
+"use strict";
 
-// wwebjs configuration
-const client = new Client({
-  puppeteer: {
-    args: ["--no-sandbox"],
-  },
-  authStrategy: new LocalAuth({ dataPath: "/data/.wwebjs_auth/" }),
-  webVersionCache: { path: "/data/.wwebjs_cache/" },
-});
-
-let receivedQr = null;
-let clientInitialized = false;
-
-// show qr code in console
-client.on("qr", (qr) => {
-  console.log("QR RECEIVED", qr);
-  receivedQr = qr;
-  qrcode.generate(qr, { small: true });
-});
-
-client.on("ready", () => {
-  clientInitialized = true;
-  console.log("Client is ready!");
-});
-
-client.initialize();
+const path = require("path");
+const { MessageMedia } = require("whatsapp-web.js");
+const { client, getQr, isInitialized } = require("./whatsappClient");
 
 // web server configuration
 const fastify = require("fastify")({ logger: true });
@@ -34,27 +11,28 @@ fastify.register(require("@fastify/view"), {
   engine: {
     ejs: require("ejs"),
   },
+  root: path.join(__dirname, "templates"),
 });
 
 fastify.get("/", function handler(_, reply) {
-  reply.view("/templates/root.ejs");
+  reply.view("root.ejs");
 });
 
 fastify.get("/qr", function handler(_, reply) {
-  reply.view("/templates/qr.ejs", { qr: receivedQr });
+  reply.view("qr.ejs", { qr: getQr() });
 });
 
 fastify.get("/chats", async function handler(_, reply) {
-  if (!clientInitialized) {
-    return reply.send({ error: "Client not initalized" });
+  if (!isInitialized()) {
+    return reply.send({ error: "Client not initialized" });
   }
   try {
-    resp = await client.getChats();
+    const resp = await client.getChats();
     const chats = resp.map((chat) => ({
       name: chat.name,
       id: chat.id._serialized,
     }));
-    return reply.view("/templates/chats.ejs", { chats: chats });
+    return reply.view("chats.ejs", { chats: chats });
   } catch (e) {
     reply.statusCode = 500;
     reply.send({ error: e });
@@ -62,13 +40,17 @@ fastify.get("/chats", async function handler(_, reply) {
 });
 
 fastify.post("/command", async function handler(request, reply) {
-  if (!clientInitialized) {
-    return reply.send({ error: "Client not initalized" });
+  if (!isInitialized()) {
+    return reply.send({ error: "Client not initialized" });
   }
   try {
-    command = request.body.command;
-    params = request.body.params;
-    resp = await client[command](...params);
+    const { command, params } = request.body;
+    // Check if client[command] is a function to avoid arbitrary code execution or errors
+    if (typeof client[command] !== "function") {
+      reply.statusCode = 400;
+      return reply.send({ error: "Invalid command" });
+    }
+    const resp = await client[command](...params);
     reply.send({ resp: resp });
   } catch (e) {
     reply.statusCode = 500;
@@ -77,28 +59,25 @@ fastify.post("/command", async function handler(request, reply) {
 });
 
 fastify.post("/command/:type", async function handler(request, reply) {
-  if (!clientInitialized) {
-    return reply.send({ error: "Client not initalized" });
+  if (!isInitialized()) {
+    return reply.send({ error: "Client not initialized" });
   }
   try {
     const { type } = request.params;
-    params = request.body.params;
+    const { params } = request.body;
 
     switch (type) {
-      case 'media':
-        remote_id = params[0]
-        const media = new MessageMedia(
-          params[1],
-          params[2],
-          params[3]
-        );
+      case "media": {
+        const remote_id = params[0];
+        const media = new MessageMedia(params[1], params[2], params[3]);
 
-        resp = await client.sendMessage(remote_id, media);
+        const resp = await client.sendMessage(remote_id, media);
         reply.send({ resp: resp });
         break;
+      }
       default:
         reply.statusCode = 400;
-        reply.send({ error: e });
+        reply.send({ error: "Invalid type" });
     }
   } catch (e) {
     reply.statusCode = 500;
