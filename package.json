@@ -18,6 +18,7 @@
   },
   "scripts": {
     "start": "node app/server.js",
-    "push": "docker buildx build --push --platform linux/amd64 --tag ghcr.io/baldarn/whatsapper:$TAG --tag ghcr.io/baldarn/whatsapper:latest ."
+    "setup-buildx": "docker run --privileged --rm tonistiigi/binfmt --install all && docker buildx create --name multi --driver docker-container --use",
+    "push": "docker buildx build --push --platform linux/amd64,linux/arm64 --tag ghcr.io/baldarn/whatsapper:$TAG --tag ghcr.io/baldarn/whatsapper:latest ."
   }
 }
