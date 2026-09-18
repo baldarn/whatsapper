@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: baldarn/whatsapper
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push:
