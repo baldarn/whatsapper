@@ -17,6 +17,7 @@
     "tap": "^16.1.0"
   },
   "scripts": {
-    "start": "node app/server.js"
+    "start": "node app/server.js",
+    "push": "docker buildx build --push --platform linux/amd64 --tag ghcr.io/baldarn/whatsapper:$TAG --tag ghcr.io/baldarn/whatsapper:latest ."
   }
 }
