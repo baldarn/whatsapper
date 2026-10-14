@@ -14,7 +14,7 @@
     "whatsapp-web.js": "^1.34.7"
   },
   "devDependencies": {
-    "tap": "^16.1.0"
+    "tap": "^21.8.0"
   },
   "scripts": {
     "start": "node app/server.js",
